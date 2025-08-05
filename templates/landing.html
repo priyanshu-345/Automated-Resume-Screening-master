@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resume Screening System</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Times New Roman", Times, serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+            min-height: 100vh;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+            text-align: center;
+        }
+        
+        .header {
+            margin-bottom: 3rem;
+        }
+        
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            background: linear-gradient(90deg, #ff512f, #dd2476);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .header p {
+            font-size: 1.2rem;
+            color: #aaa;
+            max-width: 600px;
+            margin: 0 auto;
+            line-height: 1.8;
+        }
+        
+        .role-selection {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+        
+        .role-card {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 2rem;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+            text-decoration: none;
+            color: #fff;
+        }
+        
+        .role-card:hover {
+            transform: translateY(-10px);
+            background: rgba(255, 255, 255, 0.1);
+        }
+        
+        .role-card h2 {
+            color: #ff512f;
+            margin-bottom: 1rem;
+            font-size: 1.8rem;
+        }
+        
+        .role-card p {
+            color: #aaa;
+            margin-bottom: 1.5rem;
+            line-height: 1.6;
+        }
+        
+        .role-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            color: #ff512f;
+        }
+        
+        .features {
+            margin-top: 2rem;
+            text-align: left;
+            padding: 1rem;
+        }
+        
+        .features h3 {
+            color: #ff512f;
+            margin-bottom: 0.5rem;
+        }
+        
+        .features ul {
+            list-style: none;
+            padding: 0;
+        }
+        
+        .features li {
+            margin: 0.5rem 0;
+            color: #aaa;
+            padding-left: 1.5rem;
+            position: relative;
+        }
+        
+        .features li:before {
+            content: "✓";
+            color: #ff512f;
+            position: absolute;
+            left: 0;
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Resume Screening System</h1>
+            <p>Welcome to our advanced resume screening platform. Choose your role to get started.</p>
+        </div>
+        
+        <div class="role-selection">
+            <a href="/student" class="role-card">
+                <div class="role-icon">
+                    <i class="fas fa-user-graduate"></i>
+                </div>
+                <h2>Student</h2>
+                <p>Check your resume's compatibility with different job positions and get personalized feedback.</p>
+                <div class="features">
+                    <h3>Features:</h3>
+                    <ul>
+                        <li>Single resume analysis</li>
+                        <li>Detailed skill matching</li>
+                        <li>Personalized feedback</li>
+                        <li>Category suggestions</li>
+                    </ul>
+                </div>
+            </a>
+            
+            <a href="/recruiter" class="role-card">
+                <div class="role-icon">
+                    <i class="fas fa-briefcase"></i>
+                </div>
+                <h2>Recruiter</h2>
+                <p>Screen multiple resumes efficiently and find the best candidates for your positions.</p>
+                <div class="features">
+                    <h3>Features:</h3>
+                    <ul>
+                        <li>Bulk resume analysis</li>
+                        <li>Candidate ranking</li>
+                        <li>Detailed comparison reports</li>
+                        <li>Custom job requirements</li>
+                    </ul>
+                </div>
+            </a>
+        </div>
+    </div>
+</body>
+</html> 

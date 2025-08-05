@@ -1,0 +1,1031 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Resume Analysis Result</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Times New Roman", Times, serif;
+        }
+        
+        body {
+            background: radial-gradient(circle, #000 0%, #1b2735 100%);
+            min-height: 100vh;
+            color: #fff;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            background: linear-gradient(90deg, #ff512f, #dd2476);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .score-section {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        
+        .score-circle {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.5em;
+            font-weight: bold;
+            background: linear-gradient(90deg, #ff512f, #dd2476);
+            position: relative;
+        }
+        
+        .score-circle::before {
+            content: '';
+            position: absolute;
+            width: 140px;
+            height: 140px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1);
+        }
+        
+        .analysis-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .analysis-card {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 20px;
+            border-radius: 8px;
+            transition: transform 0.3s ease;
+        }
+        
+        .analysis-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .analysis-card h3 {
+            margin-bottom: 15px;
+            color: #ff512f;
+        }
+        
+        .skill-categories {
+            margin: 15px 0;
+        }
+        
+        .skill-category {
+            margin-bottom: 15px;
+        }
+        
+        .skill-category h4 {
+            color: #ff512f;
+            margin-bottom: 8px;
+            font-size: 1.1em;
+        }
+        
+        .skill-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        
+        .skill-tag {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 0.9em;
+            transition: all 0.3s ease;
+        }
+        
+        .skill-tag:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+        }
+        
+        .feedback-section {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+        }
+        
+        .feedback-section h3 {
+            margin-bottom: 15px;
+            color: #ff512f;
+        }
+        
+        .feedback-item {
+            margin-bottom: 10px;
+            padding: 10px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 4px;
+        }
+        
+        .action-buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-top: 30px;
+        }
+        
+        .btn {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 6px;
+            font-size: 1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+        
+        .btn:hover {
+            transform: scale(1.05);
+        }
+        
+        .btn-primary {
+            background: linear-gradient(90deg, #ff512f, #dd2476);
+            color: white;
+        }
+        
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+        }
+        
+        .comparison-section {
+            margin-top: 40px;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
+        }
+        
+        .comparison-section h3 {
+            margin-bottom: 20px;
+            color: #ff512f;
+        }
+        
+        .comparison-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+        
+        .comparison-card {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 15px;
+            border-radius: 8px;
+        }
+        
+        .comparison-card h4 {
+            margin-bottom: 10px;
+            color: #ff512f;
+        }
+        
+        .chart-container {
+            margin-top: 20px;
+            height: 300px;
+        }
+        
+        .error-container {
+            text-align: center;
+            padding: 40px;
+            background: rgba(255, 0, 0, 0.1);
+            border-radius: 12px;
+            margin: 20px 0;
+        }
+        
+        .error-message {
+            color: #ff4444;
+            font-size: 1.2em;
+            margin-bottom: 20px;
+        }
+        
+        .back-button {
+            display: inline-block;
+            padding: 12px 25px;
+            background: linear-gradient(90deg, #ff512f, #dd2476);
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+            font-weight: 600;
+            transition: transform 0.3s ease;
+        }
+        
+        .back-button:hover {
+            transform: scale(1.05);
+        }
+        
+        .skill-score-section {
+            margin-top: 20px;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
+        }
+        
+        .score-details {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px;
+        }
+        
+        .skill-progress {
+            margin: 1rem 0;
+        }
+        
+        .progress-bar {
+            width: 100%;
+            height: 10px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 5px;
+            overflow: hidden;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            transition: width 1s ease;
+        }
+        
+        .necessary-progress .progress-fill {
+            background: linear-gradient(90deg, #4CAF50, #45a049);
+        }
+        
+        .normalized-progress .progress-fill {
+            background: linear-gradient(90deg, #2196F3, #1976D2);
+        }
+        
+        .comparison-card {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        
+        .comparison-card h4 {
+            margin-bottom: 15px;
+            color: #ff512f;
+        }
+        
+        .matched-skills, .missing-skills {
+            margin-top: 15px;
+        }
+        
+        .matched-skills h5, .missing-skills h5 {
+            margin-bottom: 10px;
+            color: #fff;
+        }
+        
+        .skill-tag.matched {
+            background: rgba(76, 175, 80, 0.2);
+            border: 1px solid rgba(76, 175, 80, 0.4);
+        }
+        
+        .skill-tag.missing {
+            background: rgba(244, 67, 54, 0.2);
+            border: 1px solid rgba(244, 67, 54, 0.4);
+        }
+        
+        .selection-status {
+            margin: 20px 0;
+            padding: 20px;
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.05);
+        }
+        
+        .status-card {
+            padding: 2rem;
+            border-radius: 10px;
+            margin: 2rem 0;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            color: #333;
+        }
+        
+        .status-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .status-card.selected {
+            background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+            border: 2px solid #2196f3;
+        }
+        
+        .status-card.not-selected {
+            background: linear-gradient(135deg, #fff3e0 0%, #ffe0b2 100%);
+            border: 2px solid #ff9800;
+        }
+        
+        .status-icon {
+            font-size: 3rem;
+            text-align: center;
+            margin-bottom: 1rem;
+        }
+        
+        .selected .status-icon {
+            color: #4CAF50;
+        }
+        
+        .not-selected .status-icon {
+            color: #F44336;
+        }
+        
+        .status-card h2 {
+            margin-bottom: 15px;
+            font-size: 24px;
+        }
+        
+        .status-message {
+            font-size: 1.2rem;
+            text-align: center;
+            margin: 1rem 0;
+            color: #333;
+        }
+        
+        .strength-points, .improvement-points {
+            background: rgba(255, 255, 255, 0.9);
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin-top: 1.5rem;
+            color: #333;
+        }
+        
+        .strength-points h3, .improvement-points h3 {
+            color: #1976d2;
+            margin-bottom: 1rem;
+            font-weight: 600;
+        }
+        
+        .strength-points ul, .improvement-points ul {
+            list-style-type: none;
+            padding: 0;
+            color: #333;
+        }
+        
+        .strength-points li, .improvement-points li {
+            margin: 0.5rem 0;
+            padding-left: 1.5rem;
+            position: relative;
+            color: #333;
+        }
+        
+        .strength-points li:before {
+            content: "✓";
+            color: #4caf50;
+            position: absolute;
+            left: 0;
+        }
+        
+        .improvement-points li:before {
+            content: "→";
+            color: #ff9800;
+            position: absolute;
+            left: 0;
+        }
+        
+        .category-suggestion {
+            background: rgba(255, 255, 255, 0.9);
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin: 1.5rem 0;
+            text-align: center;
+            color: #333;
+        }
+        
+        .category-suggestion h3 {
+            color: #ff512f;
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+        
+        .category-suggestion p {
+            margin: 10px 0;
+            font-size: 16px;
+            color: #333;
+        }
+        
+        .category-suggestion strong {
+            color: #4CAF50;
+            font-size: 18px;
+        }
+        
+        .suggestion-note {
+            color: #666;
+            font-style: italic;
+            margin: 1rem 0;
+        }
+        
+        .popup-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            backdrop-filter: blur(5px);
+        }
+
+        .popup-content {
+            background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+            padding: 30px;
+            border-radius: 15px;
+            width: 90%;
+            max-width: 500px;
+            position: relative;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+            color: #fff;
+            animation: popupSlideIn 0.5s ease;
+        }
+
+        @keyframes popupSlideIn {
+            from {
+                transform: translateY(-50px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .popup-header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .popup-icon {
+            font-size: 48px;
+            margin-bottom: 15px;
+        }
+
+        .popup-title {
+            font-size: 24px;
+            font-weight: 600;
+            margin-bottom: 10px;
+            background: linear-gradient(90deg, #ff512f, #dd2476);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .popup-message {
+            text-align: center;
+            margin-bottom: 20px;
+            line-height: 1.6;
+            color: #fff;
+        }
+
+        .popup-details {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            color: #fff;
+        }
+
+        .popup-details h3 {
+            color: #ff512f;
+            margin-bottom: 10px;
+            font-size: 18px;
+        }
+
+        .popup-details p {
+            margin: 10px 0;
+            font-size: 16px;
+            color: #fff;
+        }
+
+        .popup-details strong {
+            color: #4CAF50;
+            font-size: 18px;
+        }
+
+        .popup-actions {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .popup-btn {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+
+        .popup-btn:hover {
+            transform: scale(1.05);
+        }
+
+        .popup-btn.primary {
+            background: linear-gradient(90deg, #ff512f, #dd2476);
+            color: white;
+        }
+
+        .popup-btn.secondary {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+        }
+
+        .close-popup {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: none;
+            border: none;
+            color: #fff;
+            font-size: 24px;
+            cursor: pointer;
+            opacity: 0.7;
+            transition: opacity 0.3s ease;
+        }
+
+        .close-popup:hover {
+            opacity: 1;
+        }
+
+        @keyframes celebrate {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+
+        .celebration {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 9999;
+        }
+
+        .celebration-icon {
+            position: absolute;
+            font-size: 2rem;
+            animation: float 3s ease-in-out infinite;
+            opacity: 0;
+        }
+
+        @keyframes float {
+            0% { transform: translateY(0) rotate(0deg); opacity: 0; }
+            20% { opacity: 1; }
+            80% { opacity: 1; }
+            100% { transform: translateY(-100vh) rotate(360deg); opacity: 0; }
+        }
+
+        .selected .status-icon {
+            animation: celebrate 1s ease-in-out infinite;
+        }
+
+        .selected .status-card {
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(33, 150, 243, 0.4); }
+            70% { box-shadow: 0 0 0 20px rgba(33, 150, 243, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(33, 150, 243, 0); }
+        }
+    </style>
+</head>
+<body>
+    <div id="selectionPopup" class="popup-overlay" style="display: none;">
+        <div class="popup-content">
+            <button class="close-popup" onclick="closePopup()">×</button>
+            <div class="popup-header">
+                {% if result.confidence_score >= 70 %}
+                <div class="popup-icon" style="color: #4CAF50;">✓</div>
+                <h2 class="popup-title">Selected!</h2>
+                <p class="popup-message">Congratulations! Your resume meets the requirements for {{ result.category_label }} position.</p>
+                {% else %}
+                <div class="popup-icon" style="color: #F44336;">✗</div>
+                <h2 class="popup-title">Not Selected</h2>
+                <p class="popup-message">Your resume needs improvement to meet the {{ result.category_label }} requirements.</p>
+                {% endif %}
+            </div>
+            
+            <div class="popup-details">
+                {% if result.predicted_category and result.predicted_category != result.category_label %}
+                <h3>Suggested Job Category</h3>
+                <p>Based on your skills and experience, you might be a better fit for:</p>
+                <p><strong>{{ result.predicted_category }}</strong></p>
+                <p style="font-size: 14px; color: #aaa; margin-top: 10px;">
+                    Consider applying for {{ result.predicted_category }} positions or updating your resume to better match {{ result.category_label }} requirements.
+                </p>
+                {% endif %}
+                
+                <h3>Match Details</h3>
+                <p>Necessary Skills Match: {{ result.necessary_match_percentage|round|int }}%</p>
+                <p>Normalized Skills Match: {{ result.normalized_match_percentage|round|int }}%</p>
+                <p>Experience: {{ result.resume_analysis.experience_years }} years</p>
+            </div>
+            
+            <div class="popup-actions">
+                <button class="popup-btn primary" onclick="closePopup()">View Full Analysis</button>
+                <button class="popup-btn secondary" onclick="window.location.href='/'">Try Another Category</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        {% if error %}
+        <div class="error-container">
+            <h1>Error</h1>
+            <p class="error-message">{{ error }}</p>
+            <a href="/" class="back-button">Back to Home</a>
+        </div>
+        {% else %}
+        <div class="header">
+            <h1>Resume Analysis Result</h1>
+            <p>Detailed analysis of the candidate's resume</p>
+        </div>
+        
+        <div class="selection-status">
+            {% if result.is_selected %}
+            <div class="status-card selected">
+                <div class="status-icon">✓</div>
+                <h2>Selected for {{ result.category_label }}</h2>
+                <p class="status-message">{{ result.message }}</p>
+                <div class="strength-points">
+                    <h3>Key Strengths:</h3>
+                    <ul>
+                        {% if result.necessary_matched %}
+                        <li>Matched necessary skills: {{ result.necessary_matched|join(', ') }}</li>
+                        {% endif %}
+                        {% if result.normalized_matched %}
+                        <li>Matched normalized skills: {{ result.normalized_matched|join(', ') }}</li>
+                        {% endif %}
+                        {% if result.resume_analysis.experience_years > 0 %}
+                        <li>Experience: {{ result.resume_analysis.experience_years }} years</li>
+                        {% endif %}
+                    </ul>
+                </div>
+            </div>
+            {% else %}
+            <div class="status-card not-selected">
+                <div class="status-icon">✗</div>
+                <h2>Not Selected for {{ result.category_label }}</h2>
+                <p class="status-message">{{ result.message }}</p>
+                <div class="strength-points">
+                    <h3>Current Strengths:</h3>
+                    <ul>
+                        {% if result.necessary_matched %}
+                        <li>Matched necessary skills: {{ result.necessary_matched|join(', ') }}</li>
+                        {% endif %}
+                        {% if result.normalized_matched %}
+                        <li>Matched normalized skills: {{ result.normalized_matched|join(', ') }}</li>
+                        {% endif %}
+                        {% if result.resume_analysis.experience_years > 0 %}
+                        <li>Current experience: {{ result.resume_analysis.experience_years }} years</li>
+                        {% endif %}
+                    </ul>
+                </div>
+                <div class="improvement-points">
+                    <h3>Areas for Improvement:</h3>
+                    <ul>
+                        {% if result.necessary_missing %}
+                        <li>Missing necessary skills: {{ result.necessary_missing|join(', ') }}</li>
+                        {% endif %}
+                        {% if result.normalized_missing %}
+                        <li>Missing normalized skills: {{ result.normalized_missing|join(', ') }}</li>
+                        {% endif %}
+                        {% if result.resume_analysis.experience_years < 3 %}
+                        <li>Limited experience ({{ result.resume_analysis.experience_years }} years)</li>
+                        {% endif %}
+                        <li>Necessary skills match: {{ result.necessary_match_percentage|round|int }}% (target: 80%)</li>
+                        <li>Normalized skills match: {{ result.normalized_match_percentage|round|int }}% (target: 70%)</li>
+                    </ul>
+                </div>
+                {% if result.suggested_categories %}
+                <div class="category-suggestion">
+                    <h3>Suggested Categories:</h3>
+                    {% for suggestion in result.suggested_categories %}
+                    <div class="suggestion-item" style="margin: 15px 0; padding: 15px; background: rgba(255, 255, 255, 0.05); border-radius: 8px;">
+                        <p style="margin-bottom: 10px;">
+                            <strong style="color: #ff512f;">{{ suggestion.category }}</strong>
+                            <span style="color: #4CAF50; margin-left: 10px;">Match: {{ suggestion.match_score|round|int }}%</span>
+                        </p>
+                        <button class="btn btn-primary" onclick="window.location.href='/?category={{ suggestion.category }}'" style="margin-top: 10px;">
+                            Try {{ suggestion.category }}
+                        </button>
+                    </div>
+                    {% endfor %}
+                    <p class="suggestion-note" style="margin-top: 15px; color: #aaa; font-style: italic;">
+                        Consider applying for these positions or updating your resume to better match the requirements.
+                    </p>
+                </div>
+                {% endif %}
+            </div>
+            {% endif %}
+        </div>
+        
+        <div class="score-section">
+            <div class="score-circle">
+                {{ result.confidence_score|round|int }}%
+            </div>
+            <h3>Overall Match Score</h3>
+        </div>
+        
+        <div class="analysis-grid">
+            <div class="analysis-card">
+                <h3>Skills Analysis</h3>
+                <div class="skill-categories">
+                    {% set categories = {
+                        'programming': ['python', 'java', 'javascript', 'c++', 'c#', 'ruby', 'php', 'typescript', 'swift', 'kotlin'],
+                        'data_science': ['pandas', 'numpy', 'scikit-learn', 'tensorflow', 'pytorch', 'keras', 'machine learning', 'deep learning', 'data analysis', 'statistics', 'data visualization'],
+                        'web_dev': ['html', 'css', 'react', 'angular', 'vue', 'node.js', 'express', 'django', 'flask', 'spring', 'bootstrap'],
+                        'databases': ['sql', 'mysql', 'postgresql', 'mongodb', 'nosql', 'oracle', 'sqlite', 'redis'],
+                        'cloud': ['aws', 'azure', 'gcp', 'docker', 'kubernetes', 'jenkins', 'terraform', 'ansible'],
+                        'tools': ['git', 'github', 'jira', 'confluence', 'tableau', 'power bi', 'excel', 'linux', 'unix'],
+                        'ai_ml': ['nlp', 'computer vision', 'reinforcement learning', 'neural networks', 'ai/ml', 'artificial intelligence']
+                    } %}
+                    
+                    {% for category, skills_list in categories.items() %}
+                        {% set matched_skills = [] %}
+                        {% for skill in skills_list %}
+                            {% if skill in result.resume_analysis.skills %}
+                                {% set _ = matched_skills.append(skill) %}
+                            {% endif %}
+                        {% endfor %}
+                        
+                        {% if matched_skills %}
+                        <div class="skill-category">
+                            <h4>{{ category|replace('_', ' ')|title }}</h4>
+                            <div class="skill-tags">
+                                {% for skill in matched_skills %}
+                                <span class="skill-tag">{{ skill }}</span>
+                                {% endfor %}
+                            </div>
+                        </div>
+                        {% endif %}
+                    {% endfor %}
+                </div>
+            </div>
+            
+            <div class="analysis-card">
+                <h3>Experience Analysis</h3>
+                <p>Years of Experience: {{ result.resume_analysis.experience_years }}</p>
+                <div class="section-content">
+                    {% for exp in result.resume_analysis.sections.experience %}
+                    <p>{{ exp }}</p>
+                    {% endfor %}
+                </div>
+                <div class="feedback">
+                    {% if result.resume_analysis.experience_years >= 5 %}
+                    <p>Strong experience in the field</p>
+                    {% elif result.resume_analysis.experience_years >= 3 %}
+                    <p>Good level of experience</p>
+                    {% else %}
+                    <p>Limited experience in the field</p>
+                    {% endif %}
+                </div>
+            </div>
+            
+            <div class="analysis-card">
+                <h3>Education Analysis</h3>
+                <div class="section-content">
+                    {% for edu in result.resume_analysis.sections.education %}
+                    <p>{{ edu }}</p>
+                    {% endfor %}
+                </div>
+                <div class="feedback">
+                    {% if 'phd' in result.resume_analysis.sections.education|join(' ')|lower %}
+                    <p>Strong educational background with PhD</p>
+                    {% elif 'master' in result.resume_analysis.sections.education|join(' ')|lower %}
+                    <p>Good educational background with Master's degree</p>
+                    {% elif 'bachelor' in result.resume_analysis.sections.education|join(' ')|lower %}
+                    <p>Basic educational requirements met</p>
+                    {% else %}
+                    <p>Could benefit from additional education</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        
+        <div class="feedback-section">
+            <h3>Detailed Feedback</h3>
+            {% for section, data in result.resume_analysis.section_analysis.items() %}
+            {% if section != 'overall' %}
+            <div class="feedback-item">
+                <h4>{{ section|title }}</h4>
+                <p>Score: {{ data.score }}%</p>
+                {% for feedback in data.feedback %}
+                <p>{{ feedback }}</p>
+                {% endfor %}
+            </div>
+            {% endif %}
+            {% endfor %}
+        </div>
+        
+        <div class="comparison-section">
+            <h3>Comparison with Job Requirements</h3>
+            <div class="comparison-grid">
+                <div class="comparison-card">
+                    <h4>Necessary Skills</h4>
+                    <div class="skill-tags">
+                        {% for skill in result.necessary_skills %}
+                        <span class="skill-tag">{{ skill }}</span>
+                        {% endfor %}
+                    </div>
+                </div>
+                
+                <div class="comparison-card">
+                    <h4>Normalized Skills</h4>
+                    <div class="skill-tags">
+                        {% for skill in result.normalized_skills %}
+                        <span class="skill-tag">{{ skill }}</span>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+
+            <div class="skill-score-section">
+                <h4>Necessary Skills Analysis</h4>
+                <div class="score-details">
+                    <p>Score: {{ result.necessary_score }}/{{ result.max_necessary_score }}</p>
+                    <p>Match Percentage: {{ result.necessary_match_percentage|round|int }}%</p>
+                </div>
+                <div class="skill-progress necessary-progress">
+                    <div class="progress-bar">
+                        <div class="progress-fill" data-percentage="{{ result.necessary_match_percentage }}"></div>
+                    </div>
+                </div>
+                <div class="matched-skills">
+                    <h5>Matched Necessary Skills:</h5>
+                    <div class="skill-tags">
+                        {% for skill in result.necessary_matched %}
+                        <span class="skill-tag matched">{{ skill }}</span>
+                        {% endfor %}
+                    </div>
+                </div>
+                <div class="missing-skills">
+                    <h5>Missing Necessary Skills:</h5>
+                    <div class="skill-tags">
+                        {% for skill in result.necessary_missing %}
+                        <span class="skill-tag missing">{{ skill }}</span>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+
+            <div class="skill-score-section">
+                <h4>Normalized Skills Analysis</h4>
+                <div class="score-details">
+                    <p>Score: {{ result.normalized_score }}/{{ result.max_normalized_score }}</p>
+                    <p>Match Percentage: {{ result.normalized_match_percentage|round|int }}%</p>
+                </div>
+                <div class="skill-progress normalized-progress">
+                    <div class="progress-bar">
+                        <div class="progress-fill" data-percentage="{{ result.normalized_match_percentage }}"></div>
+                    </div>
+                </div>
+                <div class="matched-skills">
+                    <h5>Matched Normalized Skills:</h5>
+                    <div class="skill-tags">
+                        {% for skill in result.normalized_matched %}
+                        <span class="skill-tag matched">{{ skill }}</span>
+                        {% endfor %}
+                    </div>
+                </div>
+                <div class="missing-skills">
+                    <h5>Missing Normalized Skills:</h5>
+                    <div class="skill-tags">
+                        {% for skill in result.normalized_missing %}
+                        <span class="skill-tag missing">{{ skill }}</span>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="action-buttons">
+            <button class="btn btn-secondary" onclick="window.location.href='/'">Analyze Another Resume</button>
+        </div>
+        {% endif %}
+    </div>
+    
+    {% if not error %}
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const score = JSON.parse('{{ result.confidence_score|tojson }}');
+            const scoreCircle = document.querySelector('.score-circle');
+            
+            if (score >= 80) {
+                scoreCircle.style.background = 'linear-gradient(90deg, #4CAF50, #45a049)';
+            } else if (score >= 60) {
+                scoreCircle.style.background = 'linear-gradient(90deg, #FFC107, #ffa000)';
+            } else {
+                scoreCircle.style.background = 'linear-gradient(90deg, #F44336, #e53935)';
+            }
+
+            document.getElementById('selectionPopup').style.display = 'flex';
+
+            // Set progress bar widths from data attributes
+            document.querySelectorAll('.progress-fill').forEach(function(element) {
+                var percentage = element.getAttribute('data-percentage');
+                element.style.width = percentage + '%';
+            });
+
+            // Function to trigger celebration effects
+            function triggerCelebration() {
+                if (score >= 70) {
+                    // Confetti effect
+                    const duration = 3 * 1000;
+                    const animationEnd = Date.now() + duration;
+                    const defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 0 };
+
+                    function randomInRange(min, max) {
+                        return Math.random() * (max - min) + min;
+                    }
+
+                    const interval = setInterval(function() {
+                        const timeLeft = animationEnd - Date.now();
+
+                        if (timeLeft <= 0) {
+                            return clearInterval(interval);
+                        }
+
+                        const particleCount = 50 * (timeLeft / duration);
+                        
+                        // Confetti from left
+                        confetti({
+                            ...defaults,
+                            particleCount,
+                            origin: { x: randomInRange(0.1, 0.3), y: Math.random() - 0.2 }
+                        });
+                        
+                        // Confetti from right
+                        confetti({
+                            ...defaults,
+                            particleCount,
+                            origin: { x: randomInRange(0.7, 0.9), y: Math.random() - 0.2 }
+                        });
+                    }, 250);
+
+                    // Add floating celebration icons
+                    const celebration = document.createElement('div');
+                    celebration.className = 'celebration';
+                    document.body.appendChild(celebration);
+                    
+                    const icons = ['🎉', '🎊', '🎈', '🎆', '🎇', '✨', '🌟', '💫'];
+                    
+                    for (let i = 0; i < 20; i++) {
+                        const icon = document.createElement('div');
+                        icon.className = 'celebration-icon';
+                        icon.textContent = icons[Math.floor(Math.random() * icons.length)];
+                        icon.style.left = Math.random() * 100 + 'vw';
+                        icon.style.animationDelay = Math.random() * 2 + 's';
+                        celebration.appendChild(icon);
+                    }
+
+                    // Remove celebration elements after animation
+                    setTimeout(() => {
+                        celebration.remove();
+                    }, 5000);
+                }
+            }
+
+            // Add click handler for the View Full Analysis button
+            document.querySelector('.popup-btn.primary').addEventListener('click', function() {
+                closePopup();
+                triggerCelebration();
+            });
+        });
+
+        function closePopup() {
+            document.getElementById('selectionPopup').style.display = 'none';
+        }
+    </script>
+    {% endif %}
+</body>
+</html>

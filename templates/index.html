@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Professional Resume Screening System</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    /* Global Reset */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: "Times New Roman", Times, serif;
+    }
+    body {
+      background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+      min-height: 100vh;
+      color: #fff;
+      line-height: 1.6;
+    }
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 2rem;
+    }
+    .header {
+      text-align: center;
+      margin-bottom: 3rem;
+      padding: 2rem 0;
+    }
+    .header h1 {
+      font-size: 2.5rem;
+      margin-bottom: 1rem;
+      background: linear-gradient(90deg, #ff512f, #dd2476);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      font-weight: 700;
+    }
+    .header p {
+      font-size: 1.2rem;
+      color: #aaa;
+      max-width: 600px;
+      margin: 0 auto;
+      line-height: 1.8;
+    }
+    .main-content {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 2rem;
+      background: rgba(255, 255, 255, 0.05);
+      backdrop-filter: blur(10px);
+      border-radius: 20px;
+      padding: 2rem;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    }
+    .form-section {
+      background: rgba(255, 255, 255, 0.03);
+      padding: 2rem;
+      border-radius: 15px;
+      transition: transform 0.3s ease;
+    }
+    .form-section:hover {
+      transform: translateY(-5px);
+    }
+    .form-section h2 {
+      color: #ff512f;
+      margin-bottom: 1.5rem;
+      font-size: 1.8rem;
+      font-weight: 600;
+    }
+    .form-group {
+      margin-bottom: 1.5rem;
+    }
+    .form-group label {
+      display: block;
+      margin-bottom: 0.8rem;
+      color: #fff;
+      font-weight: 500;
+      font-size: 1.1rem;
+    }
+    .form-control {
+      width: 100%;
+      padding: 0.8rem 1rem;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 8px;
+      color: #fff;
+      font-size: 1rem;
+      transition: all 0.3s ease;
+    }
+    .form-control:focus {
+      outline: none;
+      border-color: #ff512f;
+      box-shadow: 0 0 0 2px rgba(255, 81, 47, 0.2);
+    }
+    .form-control::placeholder {
+      color: #888;
+    }
+    select.form-control {
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%23fff' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 1rem center;
+      background-size: 1em;
+      padding-right: 2.5rem;
+      color: #fff;
+    }
+
+    select.form-control option {
+      background: #2d2d2d;
+      color: #fff;
+      padding: 10px;
+    }
+
+    select.form-control:focus {
+      outline: none;
+      border-color: #ff512f;
+      box-shadow: 0 0 0 2px rgba(255, 81, 47, 0.2);
+      color: #fff;
+    }
+
+    select.form-control:hover {
+      border-color: #ff512f;
+      color: #fff;
+    }
+    .file-upload {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 2rem;
+      border: 2px dashed rgba(255, 255, 255, 0.1);
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+    .file-upload:hover {
+      border-color: #ff512f;
+      background: rgba(255, 81, 47, 0.05);
+    }
+    .file-upload i {
+      font-size: 2rem;
+      color: #ff512f;
+      margin-bottom: 1rem;
+    }
+    .file-upload p {
+      color: #aaa;
+      text-align: center;
+    }
+    .file-upload input[type="file"] {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      top: 0;
+      left: 0;
+      opacity: 0;
+      cursor: pointer;
+    }
+    .submit-btn {
+      background: linear-gradient(90deg, #ff512f, #dd2476);
+      color: white;
+      padding: 1rem 2rem;
+      border: none;
+      border-radius: 8px;
+      font-size: 1.1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      width: 100%;
+      margin-top: 1rem;
+    }
+    .submit-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(255, 81, 47, 0.3);
+    }
+    .submit-btn:disabled {
+      background: #666;
+      cursor: not-allowed;
+      transform: none;
+      box-shadow: none;
+    }
+    .loading {
+      display: none;
+      text-align: center;
+      margin-top: 1rem;
+    }
+    .loading-spinner {
+      width: 40px;
+      height: 40px;
+      border: 4px solid rgba(255, 255, 255, 0.1);
+      border-left-color: #ff512f;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin: 0 auto;
+    }
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+    .error-message {
+      color: #ff4444;
+      background: rgba(255, 68, 68, 0.1);
+      padding: 1rem;
+      border-radius: 8px;
+      margin-top: 1rem;
+      display: none;
+    }
+    .success-message {
+      color: #4CAF50;
+      background: rgba(76, 175, 80, 0.1);
+      padding: 1rem;
+      border-radius: 8px;
+      margin-top: 1rem;
+      display: none;
+    }
+    @media (max-width: 768px) {
+      .container {
+        padding: 1rem;
+    }
+      .header h1 {
+        font-size: 2rem;
+    }
+      .main-content {
+        padding: 1rem;
+      }
+      .form-section {
+        padding: 1.5rem;
+      }
+    }
+  </style>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>Professional Resume Screening System</h1>
+      <p>Welcome to our advanced resume screening platform. Please submit your resume for a comprehensive analysis of your qualifications and skills.</p>
+  </div>
+  
+    <div class="main-content">
+      <form id="resumeForm" action="/screen_resume" method="post" enctype="multipart/form-data">
+      <div class="form-section">
+          <h2>Position Details</h2>
+          <div class="form-group">
+            <label for="category_label">Please Select Your Desired Position:</label>
+            <select name="category_label" id="category_label" class="form-control" required>
+              <option value="">Select a position...</option>
+        <option value="Data Scientist">Data Scientist</option>
+        <option value="Web Developer">Web Developer</option>
+        <option value="DevOps Engineer">DevOps Engineer</option>
+        <option value="Android Developer">Android Developer</option>
+        <option value="Business Analyst">Business Analyst</option>
+        <option value="UI/UX Designer">UI/UX Designer</option>
+            </select>
+        </div>
+      </div>
+
+      <div class="form-section">
+          <h2>Resume Submission</h2>
+          <div class="form-group">
+            <label>Submit Your Resume</label>
+            <div class="file-upload" id="dropZone">
+              <i class="fas fa-cloud-upload-alt"></i>
+              <p>Please drag and drop your resume here, or click to select a file</p>
+              <p style="font-size: 1rem; color: #888; margin-top: 0.8rem;">
+                Accepted File Formats: PDF, DOCX, and TXT
+              </p>
+              <input type="file" name="file" id="file" accept=".pdf,.docx,.txt" required>
+            </div>
+          </div>
+        </div>
+
+        <button type="submit" class="submit-btn" id="submitBtn">
+          Begin Analysis
+        </button>
+      </form>
+          
+      <div class="loading" id="loading">
+        <div class="loading-spinner"></div>
+        <p>We are currently analyzing your resume. Please wait...</p>
+      </div>
+
+      <div class="error-message" id="errorMessage"></div>
+      <div class="success-message" id="successMessage"></div>
+    </div>
+  </div>
+  
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const form = document.getElementById('resumeForm');
+      const fileInput = document.getElementById('file');
+      const dropZone = document.getElementById('dropZone');
+      const submitBtn = document.getElementById('submitBtn');
+      const loading = document.getElementById('loading');
+      const errorMessage = document.getElementById('errorMessage');
+      const successMessage = document.getElementById('successMessage');
+
+      // Handle file selection
+      fileInput.addEventListener('change', function(e) {
+        const file = e.target.files[0];
+        if (file) {
+          dropZone.querySelector('p').textContent = `Selected File: ${file.name}`;
+          dropZone.style.borderColor = '#ff512f';
+        }
+      });
+
+      // Handle drag and drop
+      dropZone.addEventListener('dragover', function(e) {
+        e.preventDefault();
+        dropZone.style.borderColor = '#ff512f';
+        dropZone.style.background = 'rgba(255, 81, 47, 0.05)';
+      });
+
+      dropZone.addEventListener('dragleave', function(e) {
+        e.preventDefault();
+        dropZone.style.borderColor = 'rgba(255, 255, 255, 0.1)';
+        dropZone.style.background = 'transparent';
+      });
+
+      dropZone.addEventListener('drop', function(e) {
+        e.preventDefault();
+        const file = e.dataTransfer.files[0];
+        if (file) {
+          fileInput.files = e.dataTransfer.files;
+          dropZone.querySelector('p').textContent = `Selected File: ${file.name}`;
+          dropZone.style.borderColor = '#ff512f';
+        }
+      });
+
+      // Handle form submission
+      form.addEventListener('submit', function(e) {
+      e.preventDefault();
+        
+        if (!fileInput.files[0]) {
+          showError('Please select a resume file to proceed.');
+            return;
+        }
+
+        const category = document.getElementById('category_label').value;
+        if (!category) {
+          showError('Please select a position to continue.');
+            return;
+        }
+        
+        // Show loading state
+        submitBtn.disabled = true;
+        loading.style.display = 'block';
+        errorMessage.style.display = 'none';
+        successMessage.style.display = 'none';
+
+        // Submit form
+        const formData = new FormData(form);
+        fetch('/screen_resume', {
+          method: 'POST',
+          body: formData
+        })
+        .then(response => {
+          if (!response.ok) {
+            throw new Error('An error occurred during the submission process.');
+          }
+          return response.text();
+        })
+        .then(html => {
+          document.open();
+          document.write(html);
+          document.close();
+        })
+        .catch(error => {
+          showError('We apologize, but an error occurred while processing your resume. Please try again.');
+          submitBtn.disabled = false;
+          loading.style.display = 'none';
+        });
+      });
+
+      function showError(message) {
+        errorMessage.textContent = message;
+        errorMessage.style.display = 'block';
+        successMessage.style.display = 'none';
+      }
+
+      function showSuccess(message) {
+        successMessage.textContent = message;
+        successMessage.style.display = 'block';
+        errorMessage.style.display = 'none';
+      }
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,612 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resume Analysis Results - Recruiter Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Times+New+Roman&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Times New Roman", Times, serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+            min-height: 100vh;
+            color: #fff;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+        
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            background: linear-gradient(90deg, #ff512f, #dd2476);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .description {
+            font-size: 1.2rem;
+            color: #aaa;
+            max-width: 800px;
+            margin: 0 auto;
+            line-height: 1.8;
+        }
+
+        .back-btn {
+            display: inline-block;
+            background: linear-gradient(90deg, #ff512f, #dd2476);
+            color: white;
+            padding: 0.8rem 1.5rem;
+            border-radius: 8px;
+            text-decoration: none;
+            margin-bottom: 2rem;
+            transition: all 0.3s ease;
+        }
+
+        .back-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+        
+        .summary-section {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+        }
+        
+        .summary-section h2 {
+            color: #ff512f;
+            margin-bottom: 1.5rem;
+            font-size: 1.8rem;
+        }
+        
+        .summary-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+        }
+        
+        .stat-item {
+            text-align: center;
+            padding: 1.5rem;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 10px;
+            transition: transform 0.3s ease;
+        }
+        
+        .stat-item:hover {
+            transform: translateY(-5px);
+            background: rgba(255, 255, 255, 0.05);
+        }
+        
+        .stat-value {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #ff512f;
+            margin-bottom: 0.5rem;
+        }
+        
+        .stat-label {
+            color: #aaa;
+            font-size: 1.1rem;
+        }
+        
+        .filters-section {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+        }
+        
+        .filters-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+        }
+        
+        .filter-group {
+            margin-bottom: 1rem;
+        }
+        
+        .filter-group label {
+            display: block;
+            margin-bottom: 0.8rem;
+            color: #ff512f;
+            font-size: 1.1rem;
+        }
+        
+        .filter-group select {
+            width: 100%;
+            padding: 0.8rem;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            color: #fff;
+            font-family: "Times New Roman", Times, serif;
+            transition: all 0.3s ease;
+        }
+        
+        .filter-group select:hover {
+            border-color: rgba(255, 81, 47, 0.5);
+        }
+        
+        .filter-group select:focus {
+            outline: none;
+            border-color: #ff512f;
+            box-shadow: 0 0 0 2px rgba(255, 81, 47, 0.2);
+        }
+        
+        .sort-options {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1.5rem;
+            flex-wrap: wrap;
+        }
+        
+        .sort-btn {
+            padding: 0.8rem 1.5rem;
+            background: rgba(255, 255, 255, 0.05);
+            border: none;
+            border-radius: 8px;
+            color: #fff;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: "Times New Roman", Times, serif;
+            flex: 1;
+            min-width: 200px;
+        }
+        
+        .sort-btn.active {
+            background: linear-gradient(90deg, #ff512f, #dd2476);
+        }
+        
+        .sort-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+        
+        .sort-btn.active:hover {
+            background: linear-gradient(90deg, #ff512f, #dd2476);
+        }
+        
+        .candidates-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+        
+        .candidate-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 2rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+        }
+        
+        .candidate-card:hover {
+            transform: translateY(-5px);
+            background: rgba(255, 255, 255, 0.08);
+        }
+        
+        .candidate-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+        
+        .candidate-name {
+            font-size: 1.3rem;
+            color: #ff512f;
+        }
+        
+        .match-score {
+            font-size: 1.2rem;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            background: rgba(255, 81, 47, 0.1);
+            color: #ff512f;
+        }
+        
+        .status {
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: bold;
+        }
+        
+        .status.selected {
+            background: rgba(76, 175, 80, 0.2);
+            color: #4CAF50;
+        }
+        
+        .status.not-selected {
+            background: rgba(255, 107, 107, 0.2);
+            color: #ff6b6b;
+        }
+        
+        .skills-section {
+            margin: 1.5rem 0;
+        }
+        
+        .skills-section h3 {
+            color: #ff512f;
+            margin-bottom: 1rem;
+            font-size: 1.2rem;
+        }
+        
+        .skills-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+        
+        .skill-tag {
+            padding: 0.4rem 0.8rem;
+            border-radius: 15px;
+            font-size: 0.9rem;
+            background: rgba(255, 81, 47, 0.1);
+            color: #ff512f;
+        }
+        
+        .skill-tag.matched {
+            background: rgba(76, 175, 80, 0.2);
+            color: #4CAF50;
+        }
+        
+        .skill-tag.missing {
+            background: rgba(255, 107, 107, 0.2);
+            color: #ff6b6b;
+        }
+        
+        .feedback-section {
+            margin-top: 1.5rem;
+        }
+        
+        .feedback-section h3 {
+            color: #ff512f;
+            margin-bottom: 1rem;
+            font-size: 1.2rem;
+        }
+        
+        .feedback-item {
+            background: rgba(255, 255, 255, 0.03);
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 0.8rem;
+        }
+        
+        .feedback-item strong {
+            color: #fff;
+            display: block;
+            margin-bottom: 0.5rem;
+        }
+        
+        .feedback-item p {
+            color: #aaa;
+            line-height: 1.6;
+        }
+        
+        .action-buttons {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+        
+        .action-btn {
+            flex: 1;
+            padding: 0.8rem;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: "Times New Roman", Times, serif;
+        }
+        
+        .action-btn.primary {
+            background: linear-gradient(90deg, #ff512f, #dd2476);
+            color: white;
+        }
+        
+        .action-btn.secondary {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+        }
+        
+        .action-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+        
+        .error-message {
+            color: #ff6b6b;
+            background: rgba(255, 107, 107, 0.1);
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+            
+            .candidate-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .sort-options {
+                flex-direction: column;
+            }
+            
+            .sort-btn {
+                width: 100%;
+            }
+            
+            .action-buttons {
+                flex-direction: column;
+            }
+            
+            .action-btn {
+                width: 100%;
+            }
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <a href="/recruiter" class="back-btn">← Back to Recruiter Dashboard</a>
+        
+        <header>
+            <h1>Resume Analysis Results</h1>
+            <p class="description">Here are the detailed results of your resume analysis.</p>
+        </header>
+
+        {% if error %}
+        <div class="error-message">
+            {{ error }}
+        </div>
+        {% else %}
+        <div class="summary-section">
+            <h2>Analysis Summary</h2>
+            <div class="summary-stats">
+                <div class="stat-item">
+                    <div class="stat-value">{{ results|length }}</div>
+                    <div class="stat-label">Total Resumes</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value">{{ results|selectattr('is_selected')|list|length }}</div>
+                    <div class="stat-label">Selected Candidates</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value">{{ failed_results|length }}</div>
+                    <div class="stat-label">Failed to Process</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="filters-section">
+            <div class="filters-grid">
+                <div class="filter-group">
+                    <label>Filter by Match Score:</label>
+                    <select id="scoreFilter">
+                        <option value="all">All Scores</option>
+                        <option value="80+">80% and above</option>
+                        <option value="60+">60% and above</option>
+                        <option value="40+">40% and above</option>
+                    </select>
+                </div>
+                
+                <div class="filter-group">
+                    <label>Filter by Experience:</label>
+                    <select id="experienceFilter">
+                        <option value="all">All Experience Levels</option>
+                        <option value="5+">5+ years</option>
+                        <option value="3+">3+ years</option>
+                        <option value="1+">1+ years</option>
+                    </select>
+                </div>
+                
+                <div class="filter-group">
+                    <label>Filter by Education:</label>
+                    <select id="educationFilter">
+                        <option value="all">All Education Levels</option>
+                        <option value="phd">PhD</option>
+                        <option value="masters">Master's</option>
+                        <option value="bachelors">Bachelor's</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="sort-options">
+                <button class="sort-btn active" data-sort="score">Sort by Match Score</button>
+                <button class="sort-btn" data-sort="experience">Sort by Experience</button>
+                <button class="sort-btn" data-sort="skills">Sort by Skills Match</button>
+            </div>
+        </div>
+
+        <div class="candidates-grid">
+            {% for result in results %}
+            <div class="candidate-card" data-score="{{ result.confidence_score }}" data-experience="{{ result.resume_analysis.experience_years }}" data-education="{{ result.resume_analysis.sections.education|join(' ')|lower }}">
+                <div class="candidate-header">
+                    <div class="candidate-name">{{ result.filename }}</div>
+                    <div class="match-score">Score: {{ "%.1f"|format(result.confidence_score) }}%</div>
+                    <div class="status {{ 'selected' if result.is_selected else 'not-selected' }}">
+                        {{ 'Selected' if result.is_selected else 'Not Selected' }}
+                    </div>
+                </div>
+
+                <div class="skills-section">
+                    <h3>Skills Analysis</h3>
+                    <div class="skills-list">
+                        {% for skill in result.resume_analysis.skills %}
+                        <div class="skill-tag {{ 'matched' if skill in result.necessary_matched or skill in result.normalized_matched else 'missing' }}">
+                            {{ skill }}
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <div class="feedback-section">
+                    <h3>Feedback</h3>
+                    {% for section, feedback in result.feedback.items() %}
+                    <div class="feedback-item">
+                        <strong>{{ section|title }}:</strong>
+                        {% for item in feedback %}
+                        <p>{{ item }}</p>
+                        {% endfor %}
+                    </div>
+                    {% endfor %}
+                </div>
+
+                <div class="action-buttons">
+                    <button class="action-btn primary" data-index="{{ loop.index }}">
+                        <i class="fas fa-eye"></i> View Details
+                    </button>
+                    <button class="action-btn secondary" data-index="{{ loop.index }}">
+                        <i class="fas fa-download"></i> Download Resume
+                    </button>
+                </div>
+            </div>
+            {% endfor %}
+
+            {% if failed_results %}
+            <h2>Failed to Process</h2>
+            {% for result in failed_results %}
+            <div class="candidate-card">
+                <div class="candidate-header">
+                    <div class="candidate-name">{{ result.filename }}</div>
+                    <div class="status not-selected">Failed</div>
+                </div>
+                <div class="error-message">
+                    {{ result.error }}
+                </div>
+            </div>
+            {% endfor %}
+            {% endif %}
+        </div>
+        {% endif %}
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const scoreFilter = document.getElementById('scoreFilter');
+            const experienceFilter = document.getElementById('experienceFilter');
+            const educationFilter = document.getElementById('educationFilter');
+            const sortButtons = document.querySelectorAll('.sort-btn');
+            const candidateCards = document.querySelectorAll('.candidate-card');
+            
+            // Add event listeners for action buttons
+            document.querySelectorAll('.action-btn.primary').forEach(button => {
+                button.addEventListener('click', function() {
+                    viewDetails(this.dataset.index);
+                });
+            });
+            
+            document.querySelectorAll('.action-btn.secondary').forEach(button => {
+                button.addEventListener('click', function() {
+                    downloadResume(this.dataset.index);
+                });
+            });
+            
+            function applyFilters() {
+                const scoreValue = scoreFilter.value;
+                const experienceValue = experienceFilter.value;
+                const educationValue = educationFilter.value;
+                
+                candidateCards.forEach(card => {
+                    const score = parseInt(card.dataset.score);
+                    const experience = parseInt(card.dataset.experience);
+                    const education = card.dataset.education;
+                    
+                    let scoreMatch = true;
+                    let experienceMatch = true;
+                    let educationMatch = true;
+                    
+                    if (scoreValue !== 'all') {
+                        const minScore = parseInt(scoreValue);
+                        scoreMatch = score >= minScore;
+                    }
+                    
+                    if (experienceValue !== 'all') {
+                        const minExperience = parseInt(experienceValue);
+                        experienceMatch = experience >= minExperience;
+                    }
+                    
+                    if (educationValue !== 'all') {
+                        educationMatch = education.includes(educationValue);
+                    }
+                    
+                    card.style.display = (scoreMatch && experienceMatch && educationMatch) ? 'block' : 'none';
+                });
+            }
+            
+            function sortCards(sortBy) {
+                const cards = Array.from(candidateCards);
+                cards.sort((a, b) => {
+                    if (sortBy === 'score') {
+                        return parseInt(b.dataset.score) - parseInt(a.dataset.score);
+                    } else if (sortBy === 'experience') {
+                        return parseInt(b.dataset.experience) - parseInt(a.dataset.experience);
+                    } else if (sortBy === 'skills') {
+                        const aSkills = a.querySelectorAll('.skill-tag.matched').length;
+                        const bSkills = b.querySelectorAll('.skill-tag.matched').length;
+                        return bSkills - aSkills;
+                    }
+                });
+                
+                const grid = document.querySelector('.candidates-grid');
+                cards.forEach(card => grid.appendChild(card));
+            }
+            
+            scoreFilter.addEventListener('change', applyFilters);
+            experienceFilter.addEventListener('change', applyFilters);
+            educationFilter.addEventListener('change', applyFilters);
+            
+            sortButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    sortButtons.forEach(btn => btn.classList.remove('active'));
+                    this.classList.add('active');
+                    sortCards(this.dataset.sort);
+                });
+            });
+        });
+        
+        function viewDetails(index) {
+            // Implement view details functionality
+            console.log('View details for candidate', index);
+        }
+        
+        function downloadResume(index) {
+            // Implement download resume functionality
+            console.log('Download resume for candidate', index);
+        }
+    </script>
+</body>
+</html> 

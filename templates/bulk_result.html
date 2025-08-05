@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bulk Resume Analysis Results</title>
+    <link href="https://fonts.googleapis.com/css2?family=Times+New+Roman&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Times New Roman", Times, serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+            min-height: 100vh;
+            color: #ffffff;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            background: linear-gradient(90deg, #ff512f, #dd2476);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .description {
+            font-size: 1.2rem;
+            color: #aaa;
+            max-width: 800px;
+            margin: 0 auto;
+            line-height: 1.8;
+        }
+
+        .results-container {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 2rem;
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+        }
+
+        .candidate-card {
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            transition: transform 0.3s ease;
+        }
+
+        .candidate-card:hover {
+            transform: translateY(-5px);
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .candidate-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .candidate-name {
+            font-size: 1.3rem;
+            color: #ff512f;
+        }
+
+        .match-score {
+            font-size: 1.2rem;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            background: rgba(255, 81, 47, 0.1);
+            color: #ff512f;
+        }
+
+        .skills-section {
+            margin: 1rem 0;
+        }
+
+        .skills-section h3 {
+            color: #ff512f;
+            margin-bottom: 0.8rem;
+        }
+
+        .skills-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+
+        .skill-tag {
+            padding: 0.4rem 0.8rem;
+            border-radius: 15px;
+            font-size: 0.9rem;
+            background: rgba(255, 81, 47, 0.1);
+            color: #ff512f;
+        }
+
+        .feedback-section {
+            margin-top: 1rem;
+        }
+
+        .feedback-section h3 {
+            color: #ff512f;
+            margin-bottom: 0.8rem;
+        }
+
+        .feedback-item {
+            margin-bottom: 0.5rem;
+            color: #aaa;
+            background: rgba(255, 255, 255, 0.03);
+            padding: 1rem;
+            border-radius: 8px;
+        }
+
+        .feedback-item strong {
+            color: #ffffff;
+            display: block;
+            margin-bottom: 0.5rem;
+        }
+
+        .error-message {
+            color: #ff6b6b;
+            background: rgba(255, 107, 107, 0.1);
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+        }
+
+        .back-btn {
+            display: inline-block;
+            background: linear-gradient(90deg, #ff512f, #dd2476);
+            color: white;
+            padding: 0.8rem 1.5rem;
+            border-radius: 8px;
+            text-decoration: none;
+            margin-bottom: 2rem;
+            transition: all 0.3s ease;
+        }
+
+        .back-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .summary-section {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+        }
+
+        .summary-section h2 {
+            color: #ff512f;
+            margin-bottom: 1.5rem;
+            font-size: 1.8rem;
+        }
+
+        .summary-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-top: 1rem;
+        }
+
+        .stat-item {
+            text-align: center;
+            padding: 1.5rem;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 10px;
+            transition: transform 0.3s ease;
+        }
+
+        .stat-item:hover {
+            transform: translateY(-5px);
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .stat-item h3 {
+            color: #ff512f;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-item p {
+            color: #aaa;
+            font-size: 1.2rem;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+
+            .candidate-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .summary-stats {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <a href="/recruiter" class="back-btn">← Back to Recruiter Dashboard</a>
+        
+        <header>
+            <h1>Bulk Resume Analysis Results</h1>
+            <p class="description">Here are the detailed results of your resume analysis.</p>
+        </header>
+
+        {% if error %}
+        <div class="error-message">
+            {{ error }}
+        </div>
+        {% else %}
+        <div class="summary-section">
+            <h2>Summary</h2>
+            <div class="summary-stats">
+                <div class="stat-item">
+                    <div class="stat-value">{{ results|length }}</div>
+                    <div class="stat-label">Total Resumes</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value">{{ results|selectattr('is_selected')|list|length }}</div>
+                    <div class="stat-label">Selected Candidates</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value">{{ failed_results|length }}</div>
+                    <div class="stat-label">Failed to Process</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="results-container">
+            {% for result in results %}
+            <div class="candidate-card">
+                <div class="candidate-header">
+                    <div class="candidate-name">{{ result.filename }}</div>
+                    <div class="match-score">Score: {{ "%.1f"|format(result.confidence_score) }}%</div>
+                    <div class="status {{ 'selected' if result.is_selected else 'not-selected' }}">
+                        {{ 'Selected' if result.is_selected else 'Not Selected' }}
+                    </div>
+                </div>
+
+                <div class="skills-section">
+                    <h3>Skills Analysis</h3>
+                    <div class="skills-list">
+                        {% for skill in result.resume_analysis.skills %}
+                        <div class="skill-tag {{ 'matched' if skill in result.necessary_matched or skill in result.normalized_matched else 'missing' }}">
+                            {{ skill }}
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <div class="feedback-section">
+                    <h3>Feedback</h3>
+                    {% for section, feedback in result.feedback.items() %}
+                    <div class="feedback-item">
+                        <strong>{{ section|title }}:</strong>
+                        {% for item in feedback %}
+                        <p>{{ item }}</p>
+                        {% endfor %}
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endfor %}
+
+            {% if failed_results %}
+            <h2>Failed to Process</h2>
+            {% for result in failed_results %}
+            <div class="candidate-card">
+                <div class="candidate-header">
+                    <div class="candidate-name">{{ result.filename }}</div>
+                    <div class="status not-selected">Failed</div>
+                </div>
+                <div class="error-message">
+                    {{ result.error }}
+                </div>
+            </div>
+            {% endfor %}
+            {% endif %}
+        </div>
+        {% endif %}
+    </div>
+</body>
+</html> 

@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recruiter Dashboard - Resume Screening System</title>
+    <link href="https://fonts.googleapis.com/css2?family=Times+New+Roman&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Times New Roman", Times, serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+            min-height: 100vh;
+            color: #ffffff;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            background: linear-gradient(90deg, #ff512f, #dd2476);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .description {
+            font-size: 1.2rem;
+            color: #aaa;
+            max-width: 800px;
+            margin: 0 auto;
+            line-height: 1.8;
+        }
+
+        .form-container {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 2rem;
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: #ffffff;
+            font-size: 1.1rem;
+        }
+
+        select {
+            width: 100%;
+            padding: 0.8rem;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.05);
+            color: #ffffff;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            font-family: "Times New Roman", Times, serif;
+        }
+
+        select:hover {
+            border-color: rgba(255, 255, 255, 0.2);
+        }
+
+        select:focus {
+            outline: none;
+            border-color: #ff512f;
+            box-shadow: 0 0 0 2px rgba(255, 81, 47, 0.2);
+        }
+
+        select option {
+            background: #2d2d2d;
+            color: #ffffff;
+            padding: 0.5rem;
+        }
+
+        .file-upload {
+            border: 2px dashed rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            padding: 2rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: rgba(255, 255, 255, 0.02);
+            margin-bottom: 1rem;
+        }
+
+        .file-upload:hover {
+            border-color: #ff512f;
+            background: rgba(255, 81, 47, 0.1);
+        }
+
+        .file-upload p {
+            margin: 0;
+            color: #aaa;
+        }
+
+        .file-upload .highlight {
+            color: #ff512f;
+            font-weight: bold;
+        }
+
+        #fileList {
+            margin-top: 1rem;
+        }
+
+        .file-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0.8rem;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
+            margin-bottom: 0.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .file-item:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .file-item .remove-btn {
+            color: #ff6b6b;
+            cursor: pointer;
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            transition: all 0.3s ease;
+            background: rgba(255, 107, 107, 0.1);
+        }
+
+        .file-item .remove-btn:hover {
+            background: rgba(255, 107, 107, 0.2);
+        }
+
+        .submit-btn {
+            background: linear-gradient(90deg, #ff512f, #dd2476);
+            color: white;
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
+            font-family: "Times New Roman", Times, serif;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            margin-top: 1rem;
+        }
+
+        .loading-spinner {
+            border: 4px solid rgba(255, 255, 255, 0.1);
+            border-left-color: #ff512f;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .error-message {
+            color: #ff6b6b;
+            background: rgba(255, 107, 107, 0.1);
+            padding: 1rem;
+            border-radius: 8px;
+            margin-top: 1rem;
+            display: none;
+        }
+
+        .success-message {
+            color: #ff512f;
+            background: rgba(255, 81, 47, 0.1);
+            padding: 1rem;
+            border-radius: 8px;
+            margin-top: 1rem;
+            display: none;
+        }
+
+        .back-btn {
+            display: inline-block;
+            background: linear-gradient(90deg, #ff512f, #dd2476);
+            color: white;
+            padding: 0.8rem 1.5rem;
+            border-radius: 8px;
+            text-decoration: none;
+            margin-bottom: 2rem;
+            transition: all 0.3s ease;
+        }
+
+        .back-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="/" class="back-btn">← Back to Home</a>
+        
+        <header>
+            <h1>Recruiter Dashboard</h1>
+            <p class="description">Upload multiple resumes and let our AI analyze them for the perfect match.</p>
+        </header>
+
+        <div class="form-container">
+            <form id="uploadForm" action="/screen_multiple_resumes" method="post" enctype="multipart/form-data">
+                <div class="form-group">
+                    <label for="category_label">Job Category</label>
+                    <select name="category_label" id="category_label" required>
+                        <option value="">Select a job category</option>
+                        <option value="Data Scientist">Data Scientist</option>
+                        <option value="Web Developer">Web Developer</option>
+                        <option value="DevOps Engineer">DevOps Engineer</option>
+                        <option value="Android Developer">Android Developer</option>
+                        <option value="Business Analyst">Business Analyst</option>
+                        <option value="UI/UX Designer">UI/UX Designer</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Upload Resumes</label>
+                    <div class="file-upload" id="dropZone">
+                        <input type="file" name="file" id="file" multiple accept=".pdf,.docx,.txt" style="display: none;">
+                        <p>Drag and drop multiple resumes here or <span class="highlight">click to browse</span></p>
+                        <p style="font-size: 0.9rem; margin-top: 0.5rem;">Supported formats: PDF, DOCX, TXT</p>
+                    </div>
+                    <div id="fileList"></div>
+                </div>
+
+                <button type="submit" class="submit-btn">Begin Analysis</button>
+            </form>
+
+            <div class="loading">
+                <div class="loading-spinner"></div>
+                <p>Analyzing resumes...</p>
+            </div>
+
+            <div class="error-message" id="errorMessage"></div>
+            <div class="success-message" id="successMessage"></div>
+        </div>
+    </div>
+
+    <script>
+        const dropZone = document.getElementById('dropZone');
+        const fileInput = document.getElementById('file');
+        const fileList = document.getElementById('fileList');
+        const form = document.getElementById('uploadForm');
+        const loading = document.querySelector('.loading');
+        const errorMessage = document.getElementById('errorMessage');
+        const successMessage = document.getElementById('successMessage');
+
+        // Handle drag and drop
+        dropZone.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            dropZone.style.borderColor = '#ff512f';
+        });
+
+        dropZone.addEventListener('dragleave', (e) => {
+            e.preventDefault();
+            dropZone.style.borderColor = 'rgba(255, 255, 255, 0.2)';
+        });
+
+        dropZone.addEventListener('drop', (e) => {
+            e.preventDefault();
+            dropZone.style.borderColor = 'rgba(255, 255, 255, 0.2)';
+            const files = e.dataTransfer.files;
+            handleFiles(files);
+        });
+
+        // Handle click to upload
+        dropZone.addEventListener('click', () => {
+            fileInput.click();
+        });
+
+        fileInput.addEventListener('change', (e) => {
+            handleFiles(e.target.files);
+        });
+
+        function handleFiles(files) {
+            fileList.innerHTML = '';
+            Array.from(files).forEach(file => {
+                if (file.type === 'application/pdf' || 
+                    file.type === 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' || 
+                    file.type === 'text/plain') {
+                    const fileItem = document.createElement('div');
+                    fileItem.className = 'file-item';
+                    fileItem.innerHTML = `
+                        <span>${file.name}</span>
+                        <span class="remove-btn" onclick="removeFile(this)">×</span>
+                    `;
+                    fileList.appendChild(fileItem);
+                }
+            });
+        }
+
+        function removeFile(element) {
+            element.parentElement.remove();
+        }
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const category = document.getElementById('category_label').value;
+            if (!category) {
+                showError('Please select a job category');
+                return;
+            }
+
+            const files = fileInput.files;
+            if (files.length === 0) {
+                showError('Please select at least one resume');
+                return;
+            }
+
+            loading.style.display = 'block';
+            errorMessage.style.display = 'none';
+            successMessage.style.display = 'none';
+
+            try {
+                const formData = new FormData(form);
+                const response = await fetch('/screen_multiple_resumes', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+
+                const result = await response.text();
+                document.open();
+                document.write(result);
+                document.close();
+            } catch (error) {
+                showError('Error analyzing resumes: ' + error.message);
+            } finally {
+                loading.style.display = 'none';
+            }
+        });
+
+        function showError(message) {
+            errorMessage.textContent = message;
+            errorMessage.style.display = 'block';
+            successMessage.style.display = 'none';
+        }
+
+        function showSuccess(message) {
+            successMessage.textContent = message;
+            successMessage.style.display = 'block';
+            errorMessage.style.display = 'none';
+        }
+    </script>
+</body>
+</html> 
